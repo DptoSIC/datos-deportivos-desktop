@@ -9,20 +9,30 @@
 plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
+    id 'java'
+    id 'application'
+    id 'eclipse'
 }
 
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+    
+    maven { url 'https://jitpack.io' }
 }
 
-dependencies {
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
-    api 'org.apache.commons:commons-math3:3.6.1'
 
-    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation 'com.google.guava:guava:28.2-jre'
+
+application {
+    mainClassName = 'es.lanyu.desktop.App'
+}
+    
+dependencies {
+
+    implementation 'com.github.LanyuEStudio:datos-deportivos:v1.0.0'
+    implementation 'com.github.lanyuestudio:tablelayout-min-gradle:v1'
+    implementation 'com.github.LanyuEStudio:lanyu-ui:v0.1.1'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
