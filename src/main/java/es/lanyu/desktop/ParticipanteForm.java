@@ -62,8 +62,16 @@ public class ParticipanteForm extends JPanel {
     Arrays.asList(getPropertyChangeListeners(nombrePropiedad)).forEach(l -> l.propertyChange(evento));
   }
   
-  public void cargarParticipante(Participante participante) {
+  private void cargarParticipante(Participante participante) {
     setParticipante(participante);
     getTxtNombre().setText(getParticipante().getNombre());
+  }
+  
+  @Override
+  public void repaint() {
+    super.repaint();
+    if (getParticipante() != null) {
+      cargarParticipante(getParticipante());
+    }
   }
 }

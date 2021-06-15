@@ -31,7 +31,7 @@ public class App {
     tabla.addCell(participanteView);
     tabla.row();
     
-    participanteEditor.addPropertyChangeListener("participante", e -> participanteView.cargarParticipante((Participante)e.getNewValue()));
+    participanteEditor.addPropertyChangeListener("participante", e -> participanteView.repaint());
     
     JButton btnRefrescar = new JButton("Refrescar");
     btnRefrescar.addActionListener(new ActionListener() {
@@ -39,7 +39,7 @@ public class App {
       @Override
       public void actionPerformed(ActionEvent evento) {
         System.out.println("El nombre actual es: " + participante.getNombre());
-        participanteView.cargarParticipante(participante);
+        participanteView.repaint();//.cargarParticipante(participante);
       }
       
     });
