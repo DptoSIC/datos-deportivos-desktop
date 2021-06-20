@@ -1,5 +1,7 @@
 package es.lanyu.desktop;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
@@ -52,7 +54,19 @@ public class ParticipanteForm extends JPanel {
     getTxtNombre().addCaretListener(e -> cambiaParticipante());
     
     Font fuente = new Font(Font.SERIF, Font.PLAIN, 30);
-    Arrays.asList(tabla.getComponents()).forEach(c -> c.setFont(fuente));
+    setFont(fuente);
+  }
+  
+  @Override
+  public void setFont(Font font) {
+    super.setFont(font);
+    for (Component componente : getComponents()) {
+      componente.setFont(font);
+      if (componente instanceof Container) {
+        Container container = (Container)componente;
+        Arrays.asList(container.getComponents()).forEach(c -> c.setFont(font));
+      }
+    }
   }
   
   private void cambiaParticipante() {
@@ -64,7 +78,9 @@ public class ParticipanteForm extends JPanel {
   
   private void cargarParticipante(Participante participante) {
     setParticipante(participante);
-    getTxtNombre().setText(getParticipante().getNombre());
+    if (participante != null) {
+      getTxtNombre().setText(getParticipante().getNombre());
+    }
   }
   
   @Override

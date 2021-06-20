@@ -30,9 +30,12 @@ application {
     
 dependencies {
 
-    implementation 'com.github.LanyuEStudio:datos-deportivos:v1.0.0'
-    implementation 'com.github.lanyuestudio:tablelayout-min-gradle:v1'
-    implementation 'com.github.LanyuEStudio:lanyu-ui:v0.1.1'
+    implementation 'com.github.lanyuestudio:datos-deportivos:v1.0.0'
+    implementation 'com.github.lanyuestudio:lanyuCommon:1.0.3'
+    implementation 'com.github.lanyuestudio:lanyu-ui:1.0.0'
+    
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
