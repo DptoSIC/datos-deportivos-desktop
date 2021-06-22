@@ -3,10 +3,13 @@ package es.lanyu.desktop;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,11 +36,15 @@ public abstract class DatosDeportivosAbstractDAO<T> {
     getMapper().addMixIn(Participante.class, MixIns.Participantes.class);
   }
 
-  public List<T> getEntidades(Class<T> tipo, String path) {
+  public List<T> getEntidades(Class<T> tipo, String path, Map<String, String> parametros) {
     List<T> elementos = new ArrayList<T>();
     HttpURLConnection con = null;
     try {
-      URL url = new URL(getApiUrl() + path);
+      String queryString = "";
+      if (parametros != null) {
+        queryString = getParamsString(parametros);
+      }
+      URL url = new URL(getApiUrl() + path + "?" + queryString );
       con = (HttpURLConnection) url.openConnection();
       con.setRequestMethod("GET");
       con.setConnectTimeout(5000);
@@ -59,5 +66,18 @@ public abstract class DatosDeportivosAbstractDAO<T> {
     }
     return elementos;
   }
-  
+
+  public static String getParamsString(Map<String, String> params) throws UnsupportedEncodingException {
+    StringBuilder result = new StringBuilder();
+
+    for (Map.Entry<String, String> entry : params.entrySet()) {
+      result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+      result.append("=");
+      result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+      result.append("&");
+    }
+
+    String resultString = result.toString();
+    return resultString.length() > 0 ? resultString.substring(0, resultString.length() - 1) : resultString;
+  }
 }
