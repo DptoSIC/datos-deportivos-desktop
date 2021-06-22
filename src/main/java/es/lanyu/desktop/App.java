@@ -1,53 +1,57 @@
 package es.lanyu.desktop;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import com.esotericsoftware.tablelayout.swing.Table;
 
 import es.lanyu.participante.Participante;
+import es.lanyu.ui.swing.SimpleJTable;
 
 public class App {
-
+  
   public static void main(String[] args) {
-    int ancho = 480, alto = 270;
+    int ancho = 800, alto = 400;
     JFrame frame = new JFrame("Mi Frame");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     
     Table tabla = new Table();
     frame.getContentPane().add(tabla);
     
-    Participante participante = new Participante("Real Madrid");
-    participante.setIdentificador("1");
+    List<Participante> participantes = new ParticipanteDAO().getParticipantes();
     
-    ParticipanteForm participanteEditor = new ParticipanteForm(participante, true);
-    tabla.addCell(participanteEditor);
+    JPanel panelFormulario = new JPanel();
+    tabla.addCell(panelFormulario).expandX();
     tabla.row();
     
-    ParticipanteForm participanteView = new ParticipanteForm(participante);
-    tabla.addCell(participanteView);
-    tabla.row();
-    
-    participanteEditor.addPropertyChangeListener("participante", e -> participanteView.repaint());
-    
-    JButton btnRefrescar = new JButton("Refrescar");
-    btnRefrescar.addActionListener(new ActionListener() {
-      
-      @Override
-      public void actionPerformed(ActionEvent evento) {
-        System.out.println("El nombre actual es: " + participante.getNombre());
-        participanteView.repaint();//.cargarParticipante(participante);
-      }
-      
+    SimpleJTable<Participante> tablaParticipantes = new SimpleJTable<Participante>(participantes,
+        new String[] { "ID", "Nombre" },
+        p -> p.getIdentificador(),
+        Participante::getNombre);
+    tablaParticipantes.addMouseListener(new MouseAdapter() {
+      public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() > 1) {
+          Participante participante = tablaParticipantes.getSeleccionado();
+          System.out.println(participante);
+          panelFormulario.removeAll();
+          panelFormulario.add(new ParticipanteForm(participante, true));
+          panelFormulario.revalidate();
+//          panelFormulario.repaint();
+        }
+      };
     });
-    tabla.addCell(btnRefrescar);
+    
+    JScrollPane scrollPane = new JScrollPane(tablaParticipantes);
+    tabla.addCell(scrollPane).fillX();
     
     tabla.debug();
     frame.setSize(ancho, alto);
-    frame.pack();
+//    frame.pack();
     frame.setLocationRelativeTo(null);
 //    frame.setLocation(2000, 200);
     frame.setVisible(true);
