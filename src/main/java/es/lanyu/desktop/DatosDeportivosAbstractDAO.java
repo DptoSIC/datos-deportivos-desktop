@@ -55,6 +55,7 @@ public abstract class DatosDeportivosAbstractDAO<T> {
       JsonNode nodoElementos = getMapper().readTree(buffer).findValue(path);
       for (JsonNode nodo : nodoElementos) {
         T entidad = getMapper().readValue(nodo.traverse(), tipo);
+        completarMapeo(entidad, nodo);
         elementos.add(entidad);
       }
       
@@ -66,6 +67,9 @@ public abstract class DatosDeportivosAbstractDAO<T> {
     }
     return elementos;
   }
+
+  // Usar para terminar un mapeo personalizado
+  protected void completarMapeo(T entidad, JsonNode nodo) {}
 
   public static String getParamsString(Map<String, String> params) throws UnsupportedEncodingException {
     StringBuilder result = new StringBuilder();

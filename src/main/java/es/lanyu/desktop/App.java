@@ -10,6 +10,9 @@ import javax.swing.JScrollPane;
 
 import com.esotericsoftware.tablelayout.swing.Table;
 
+import es.lanyu.commons.servicios.entidad.ServicioEntidad;
+import es.lanyu.commons.servicios.entidad.ServicioEntidadImpl;
+import es.lanyu.comun.evento.Partido;
 import es.lanyu.participante.Participante;
 import es.lanyu.ui.swing.SimpleJTable;
 
@@ -25,28 +28,22 @@ public class App {
     
     List<Participante> participantes = new ParticipanteDAO().getParticipantes();
     
+    List<Partido> partidos = new PartidoDAO().getPartidos();
+    ServicioEntidad servicioEntidad = new ServicioEntidadImpl();
+    participantes.forEach(p -> servicioEntidad.getGestorNombrables().addNombrable(Participante.class, p));
+    partidos.forEach(p -> p.setServicioEntidad(servicioEntidad));
+    partidos.forEach(System.out::println);
+    
     JPanel panelFormulario = new JPanel();
     tabla.addCell(panelFormulario).expandX();
     tabla.row();
     
-    SimpleJTable<Participante> tablaParticipantes = new SimpleJTable<Participante>(participantes,
-        new String[] { "ID", "Nombre" },
-        p -> p.getIdentificador(),
-        Participante::getNombre);
-    tablaParticipantes.addMouseListener(new MouseAdapter() {
-      public void mouseClicked(MouseEvent e) {
-        if (e.getClickCount() > 1) {
-          Participante participante = tablaParticipantes.getSeleccionado();
-          System.out.println(participante);
-          panelFormulario.removeAll();
-          panelFormulario.add(new ParticipanteForm(participante, true));
-          panelFormulario.revalidate();
-//          panelFormulario.repaint();
-        }
-      };
-    });
-    
-    JScrollPane scrollPane = new JScrollPane(tablaParticipantes);
+    SimpleJTable<Partido> tablaPartidos = new SimpleJTable<Partido>(partidos,
+        new String[] { "Fecha", "Equipos" },
+        p -> p.getFecha(),
+        Partido::getEquipos);
+    tablaPartidos.setAnchosPreferidos(200, 600);
+    JScrollPane scrollPane = new JScrollPane(tablaPartidos);
     tabla.addCell(scrollPane).fillX();
     
     tabla.debug();
