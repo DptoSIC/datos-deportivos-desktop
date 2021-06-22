@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -35,6 +36,7 @@ public class App {
     partidos.forEach(System.out::println);
     
     JPanel panelFormulario = new JPanel();
+    panelFormulario.add(new JLabel("Seleccione un partido con doble click"));
     tabla.addCell(panelFormulario).expandX();
     tabla.row();
     
@@ -42,6 +44,18 @@ public class App {
         new String[] { "Fecha", "Equipos" },
         p -> p.getFecha(),
         Partido::getEquipos);
+    
+    tablaPartidos.addMouseListener(new MouseAdapter() {
+      public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() > 1) {
+          Partido partido = tablaPartidos.getSeleccionado();
+          System.out.println(partido);
+          panelFormulario.removeAll();
+          panelFormulario.add(new PartidoForm(partido));
+          panelFormulario.revalidate();
+        }
+      };
+    });
     tablaPartidos.setAnchosPreferidos(200, 600);
     JScrollPane scrollPane = new JScrollPane(tablaPartidos);
     tabla.addCell(scrollPane).fillX();
