@@ -2,6 +2,8 @@ package es.lanyu.desktop;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -11,6 +13,7 @@ import javax.swing.JScrollPane;
 
 import com.esotericsoftware.tablelayout.swing.Table;
 
+import es.lanyu.commons.config.Propiedades;
 import es.lanyu.commons.servicios.entidad.ServicioEntidad;
 import es.lanyu.commons.servicios.entidad.ServicioEntidadImpl;
 import es.lanyu.comun.evento.Partido;
@@ -18,10 +21,29 @@ import es.lanyu.participante.Participante;
 import es.lanyu.ui.swing.SimpleJTable;
 
 public class App {
+  public final static Propiedades PROPIEDADES;
+  
+  static {
+    PROPIEDADES = new Propiedades("app.properties");
+  }
+
+  private static void guardarConfiguracion(JFrame frame) {
+    PROPIEDADES.setProperty("ancho", frame.getWidth() + "");
+    PROPIEDADES.setProperty("alto", frame.getHeight() + "");
+    PROPIEDADES.guardarPropiedades();
+  }
   
   public static void main(String[] args) {
-    int ancho = 800, alto = 400;
+    int ancho = PROPIEDADES.leerPropiedadInt("ancho");
+    int alto = PROPIEDADES.leerPropiedadInt("alto");
     JFrame frame = new JFrame("Mi Frame");
+    frame.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent e) {
+        guardarConfiguracion(frame);
+        super.windowClosing(e);
+      }
+    });
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     
     Table tabla = new Table();

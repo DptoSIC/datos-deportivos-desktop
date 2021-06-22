@@ -22,7 +22,7 @@ public abstract class DatosDeportivosAbstractDAO<T> {
   private ObjectMapper mapper;
   
   private String getApiUrl() {
-    return "https://datos-deportivos-api.herokuapp.com/api/";
+    return App.PROPIEDADES.getProperty("url-api");
   }
   
   private ObjectMapper getMapper() {
