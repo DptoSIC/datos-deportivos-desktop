@@ -15,6 +15,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -94,6 +95,11 @@ public class App {
     tabla.addCell(panelFormulario).expandX();
     tabla.row();
     
+    // Nuevo partido
+    JButton btnNuevoPartido = new JButton("Nuevo Partido");
+    tabla.addCell(btnNuevoPartido);
+    tabla.row();
+    
     // Icono borrar
     ImageIcon iconoBorrar = Iconos.getIcono(Iconos.BORRAR, 14);
     
@@ -123,6 +129,20 @@ public class App {
     };
     new ButtonColumn(tablaPartidos, accion, 2);
     tablaPartidos.setColumnasEditables(2);
+    
+    // Los listeners despues de crearse componentes
+    btnNuevoPartido.addActionListener(l -> {
+      PartidoForm partidoForm = new PartidoForm(participantes);
+      int opcion = JOptionPane.showConfirmDialog(frame, partidoForm, "Nuevo partido",
+          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+      if (opcion == JOptionPane.OK_OPTION) {
+        Partido partido = partidoForm.leerPartido();
+        System.out.println("Creado " + partido);
+        partidos.add(partido);
+        // si no esto no podria invocarse
+        tablaPartidos.revalidate();
+      }
+    });
     
     tablaPartidos.addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
