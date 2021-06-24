@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -34,6 +35,7 @@ import es.lanyu.comun.suceso.Suceso;
 import es.lanyu.comun.suceso.TarjetaImpl;
 import es.lanyu.comun.suceso.TarjetaImpl.TipoTarjeta;
 import es.lanyu.participante.Participante;
+import es.lanyu.ui.iconos.Iconos;
 import es.lanyu.ui.swing.ButtonColumn;
 import es.lanyu.ui.swing.SimpleJTable;
 import es.lanyu.ui.swing.render.CondicionalCustomRenderer;
@@ -92,13 +94,15 @@ public class App {
     tabla.addCell(panelFormulario).expandX();
     tabla.row();
     
+    // Icono borrar
+    ImageIcon iconoBorrar = Iconos.getIcono(Iconos.BORRAR, 14);
+    
     // Tabla de Partidos
     SimpleJTable<Partido> tablaPartidos = new SimpleJTable<Partido>(partidos,
-        new String[] { "Fecha", "Detalles", "Borrar", "Empate" },
+        new String[] { "Fecha", "Detalles", "Borrar" },
         p -> getStringFechaPartido(p),
         p -> p,
-        p -> "Borrar",
-        p -> p.getGanador() == null);
+        p -> iconoBorrar);
     
     // Pongo un boton de accion en tabla
     Action accion = new AbstractAction() {
@@ -108,7 +112,7 @@ public class App {
         SimpleJTable<Partido> tabla = (SimpleJTable<Partido>)e.getSource();
         Partido partido = tabla.getSeleccionado();
         int opcion = JOptionPane.showConfirmDialog(frame, new PartidoForm(partido), "Borrar partido",
-            JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, Iconos.getIcono(Iconos.BORRAR, 30));
         if (opcion == JOptionPane.OK_OPTION) {
           System.out.println("Borrar " + partido);
           partidos.remove(tablaPartidos.getSeleccionado());
