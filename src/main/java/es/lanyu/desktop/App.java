@@ -66,7 +66,12 @@ public class App {
     
     // Datos de partidos
     List<Partido> partidos = new PartidoDAO().getPartidos();
-    partidos.forEach(p -> p.setServicioEntidad(servicioEntidad));
+    partidos.forEach(p -> {
+      // generar sucesos para que sea mas vistoso
+      p.setServicioEntidad(servicioEntidad);
+      generarSucesos(p.getLocal(), (int)MathUtils.generarFloatRandom(3, 7)).forEach(p::addSuceso);
+      generarSucesos(p.getVisitante(), (int)MathUtils.generarFloatRandom(3, 7)).forEach(p::addSuceso);
+    });
     // Ver partidos cargados
     partidos.forEach(System.out::println);
     
@@ -105,5 +110,19 @@ public class App {
 //    frame.setLocation(2000, 200);
     frame.setVisible(true);
   }
-
+  
+  private static Collection<Suceso> generarSucesos(Participante participante, int numero) {
+    Collection<Suceso> sucesos = new ArrayList<Suceso>();
+    for (int i = 0; i < numero; i++) {
+      Suceso suceso;
+      if (MathUtils.nextFloat() > .2) {
+        suceso = new TarjetaImpl(null, participante,   MathUtils.nextFloat() > .9 ? TipoTarjeta.ROJA : TipoTarjeta.AMARILLA); 
+      } else {
+        suceso = new GolImpl(null, "N/D", participante);
+      }
+      sucesos.add(suceso);
+    }
+    
+    return sucesos;
+  }
 }
