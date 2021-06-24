@@ -16,6 +16,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -106,7 +107,13 @@ public class App {
       public void actionPerformed(ActionEvent e) {
         SimpleJTable<Partido> tabla = (SimpleJTable<Partido>)e.getSource();
         Partido partido = tabla.getSeleccionado();
-        System.out.println("Borrar " + partido);
+        int opcion = JOptionPane.showConfirmDialog(frame, new PartidoForm(partido), "Borrar partido",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (opcion == JOptionPane.OK_OPTION) {
+          System.out.println("Borrar " + partido);
+          partidos.remove(tablaPartidos.getSeleccionado());
+          tablaPartidos.repaint();
+        }
       }
     
     };
