@@ -4,14 +4,18 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 
 import com.esotericsoftware.tablelayout.swing.Table;
 
@@ -83,9 +87,9 @@ public class App {
     
     // Tabla de Partidos
     SimpleJTable<Partido> tablaPartidos = new SimpleJTable<Partido>(partidos,
-        new String[] { "Fecha", "Equipos" },
-        p -> p.getFecha(),
-        Partido::getEquipos);
+        new String[] { "Fecha", "Detalles" },
+        p -> getStringFechaPartido(p),
+        Partido::detallesDelPartido);
     
     tablaPartidos.addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
@@ -98,7 +102,13 @@ public class App {
         }
       };
     });
-    tablaPartidos.setAnchosPreferidos(200, 600);
+    int anchoFecha = 140;
+    tablaPartidos.setAnchosPreferidos(anchoFecha, 600);
+    TableColumn columnaFecha = tablaPartidos.getColumn("Fecha");
+    columnaFecha.setMaxWidth(anchoFecha);
+    DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+    dtcr.setHorizontalAlignment(JLabel.CENTER);
+    columnaFecha.setCellRenderer(dtcr);
     
     // La JTable debe ir dentro de JScrollPane
     JScrollPane scrollPane = new JScrollPane(tablaPartidos);
@@ -125,4 +135,17 @@ public class App {
     
     return sucesos;
   }
+  
+  // Metodos de utilidad para mostrar partidos
+  private static SimpleDateFormat sdf = new SimpleDateFormat("ddMMMyyyy HH:mm");
+  public static String getStringFechaPartido(Partido partido) {
+    Date fecha = partido != null ? partido.getFecha() : null;
+    String resultadoFecha = "No disponible";
+    if (fecha != null) {
+      resultadoFecha = sdf.format(fecha).replace(".", "").toUpperCase();
+    }
+    
+    return resultadoFecha;
+  }
+  
 }
