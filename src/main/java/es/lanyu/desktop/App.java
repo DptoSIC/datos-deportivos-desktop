@@ -1,5 +1,6 @@
 package es.lanyu.desktop;
 
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -30,6 +31,7 @@ import es.lanyu.comun.suceso.TarjetaImpl;
 import es.lanyu.comun.suceso.TarjetaImpl.TipoTarjeta;
 import es.lanyu.participante.Participante;
 import es.lanyu.ui.swing.SimpleJTable;
+import es.lanyu.ui.swing.render.CondicionalCustomRenderer;
 
 public class App {
   public final static Propiedades PROPIEDADES;
@@ -89,7 +91,7 @@ public class App {
     SimpleJTable<Partido> tablaPartidos = new SimpleJTable<Partido>(partidos,
         new String[] { "Fecha", "Detalles" },
         p -> getStringFechaPartido(p),
-        Partido::detallesDelPartido);
+        p -> p);
     
     tablaPartidos.addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
@@ -109,6 +111,9 @@ public class App {
     DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
     dtcr.setHorizontalAlignment(JLabel.CENTER);
     columnaFecha.setCellRenderer(dtcr);
+    
+    tablaPartidos.getColumnModel().getColumn(1).setCellRenderer(new CondicionalCustomRenderer<Partido>(
+        p -> p.detallesDelPartido(), p -> p.getGanador() == null, Color.decode("#b9ea96")));
     
     // La JTable debe ir dentro de JScrollPane
     JScrollPane scrollPane = new JScrollPane(tablaPartidos);
