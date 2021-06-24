@@ -89,9 +89,10 @@ public class App {
     
     // Tabla de Partidos
     SimpleJTable<Partido> tablaPartidos = new SimpleJTable<Partido>(partidos,
-        new String[] { "Fecha", "Detalles" },
+        new String[] { "Fecha", "Detalles", "Empate" },
         p -> getStringFechaPartido(p),
-        p -> p);
+        p -> p,
+        p -> p.getGanador() == null);
     
     tablaPartidos.addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
