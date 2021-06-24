@@ -1,6 +1,7 @@
 package es.lanyu.desktop;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -11,6 +12,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,6 +33,7 @@ import es.lanyu.comun.suceso.Suceso;
 import es.lanyu.comun.suceso.TarjetaImpl;
 import es.lanyu.comun.suceso.TarjetaImpl.TipoTarjeta;
 import es.lanyu.participante.Participante;
+import es.lanyu.ui.swing.ButtonColumn;
 import es.lanyu.ui.swing.SimpleJTable;
 import es.lanyu.ui.swing.render.CondicionalCustomRenderer;
 
@@ -89,10 +93,25 @@ public class App {
     
     // Tabla de Partidos
     SimpleJTable<Partido> tablaPartidos = new SimpleJTable<Partido>(partidos,
-        new String[] { "Fecha", "Detalles", "Empate" },
+        new String[] { "Fecha", "Detalles", "Borrar", "Empate" },
         p -> getStringFechaPartido(p),
         p -> p,
+        p -> "Borrar",
         p -> p.getGanador() == null);
+    
+    // Pongo un boton de accion en tabla
+    Action accion = new AbstractAction() {
+      
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        SimpleJTable<Partido> tabla = (SimpleJTable<Partido>)e.getSource();
+        Partido partido = tabla.getSeleccionado();
+        System.out.println("Borrar " + partido);
+      }
+    
+    };
+    new ButtonColumn(tablaPartidos, accion, 2);
+    tablaPartidos.setColumnasEditables(2);
     
     tablaPartidos.addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
